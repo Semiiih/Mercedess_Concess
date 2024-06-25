@@ -1,5 +1,58 @@
+<?php
+session_start();
+
+function initPDO()
+{
+    try {
+        $pdo = new PDO(
+            'mysql:host=127.0.0.1;dbname=vente;charset=utf8',
+            'root',
+            'root'
+        );
+        $pdo->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
+        return $pdo;
+    } catch (PDOException $e) {
+        echo "" . $e->getMessage();
+    }
+}
+
+function getProductById($id)
+{
+    $pdo = initPDO();
+
+    $stmt = $pdo->prepare("SELECT * FROM produit WHERE id = ?");
+    $stmt->execute([$id]);
+    $product = $stmt->fetch(PDO::FETCH_ASSOC);
+    return $product;
+}
+
+if (!isset($_SESSION['cart'])) {
+    $_SESSION['cart'] = [1, 2]; 
+}
+
+$cartProducts = [];
+$total = 0;
+foreach ($_SESSION['cart'] as $productId ) {
+    $product = getProductById($productId);
+    if ($product) {
+        $cartProducts[] = $product;
+        $total += $product['prix'] * $product['inBasket'];
+    }
+    
+}
+
+$isEmpty = true;
+foreach ($cartProducts as $product) {
+    if ($product['inBasket'] > 0) {
+        $isEmpty = false;
+        break;
+    }
+}
+
+?>
+
 <!DOCTYPE html>
-<html >
+<html>
 
 <head>
     <meta charset="utf-8">
@@ -25,45 +78,64 @@
             </ul>
             
             <a class="panier" href="./panier.php">Panier</a>
-
         </header>
 
         <div>
             <article class="article">
-                <h1 class="homeTitle ">Choissisez La Meilleur Voiture</h1>
-                <div class="separateur"></div>          
-                <h2 class="articleText">AMG GT63 S</h2>
-
-                <img class="articleImg " src="./images/amgGt63s.jpg" alt="gt63s">
-
-                <div class="articleInfo">
-                    <div>
-                        <p class="articleChiffres">214 855. 00 €</p>
-                        <p class="articleSousDescriptions">Prix</p>
+                <div class="homeBgEclairage1"></div>
+                <div class="homeBgEclairage2"></div>
+                
+                <div class="divPanier">
+                    <h1>Votre panier :</h1>
+                    <div class="totalDiv">
+                        <h1>Total de la commande : <?php echo htmlspecialchars($total); ?> €</h1>
                     </div>
-                    <div>
-                        <p class="articleChiffres">577 ch</p>
-                        <p class="articleSousDescriptions">Chevaux</p>
-                    </div>
-                    <div>
-                        <p class="articleChiffres">V8 de 4,0 L</p>
-                        <p class="articleSousDescriptions">Moteur</p>
-                    </div>
+                    <?php if (!$isEmpty) : ?>
+                        <?php foreach ($cartProducts as $product) : ?>
+                            <?php if ($product['inBasket'] > 0) : ?>
+                                <div class="panierBlock">
+                                    <h3>Libellé : <?php echo htmlspecialchars($product['libelle']); ?></h3>
+                                    <h4>Prix : <?php echo htmlspecialchars($product['prix']); ?> €</h4>
+                                    <h4>Stock : <?php echo htmlspecialchars($product['stock']); ?></h4>
+                                    <h4 class="quantityControl">nombre dans le panier : <?php echo htmlspecialchars($product['inBasket']); ?>
+                                        <div class="quantityControl">
+                                            <form class="addDelete" method="post" action="controller.php">
+                                                <input type="hidden" name="action" value="addToBasket" />
+                                                <input type="hidden" name="productId" value="<?php echo $product["id"]?>" />
+                                                <button class="buttonAddDelete" type="submit">+</button>
+                                            </form>
+                                            <form class="addDelete" method="post" action="controller.php">
+                                                <input type="hidden" name="action" value="removeToBasket" />
+                                                <input type="hidden" name="productId" value="<?php echo $product["id"]?>" />
+                                                <button class="buttonAddDelete" type="submit">-</button>
+                                            </form>
+                                        </div>
+                                    </h4>
+                                    <h4><img src="<?php echo htmlspecialchars($product['image']); ?>" alt="<?php echo htmlspecialchars($product['libelle']); ?>" width="760"></h4>
+                                    <div class="buttonDiv">
+                                        <!-- <form method="POST" action="panier.php">
+                                            <input type="hidden" name="remove_product_id" value="<?php echo $product['id']; ?>">
+                                            <button type="submit" class="button">Supprimer</button>
+                                        </form> -->
+                                        <form class="formButton" method="post" action="controller.php">
+                                            <input type="hidden" name="action" value="removeToBasket" />
+                                            <input type="hidden" name="productId" value="<?php echo $product["id"]?>" />
+                                            <button class="button" type="submit">supprimer</button>
+                                        </form>
+                                        <button class="button">Commander</button>
+                                    </div>
+                                </div>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    <?php else : ?>
+                        <p class='panierVide'>Votre panier est vide.</p>
+                    <?php endif; ?>
                 </div>
-
-                <a class="buttonStart" href="">Ajouter<br> au panier</a>
             </article>
             
-            <div class="homeBgEclairage1"></div>
-            <div class="homeBgEclairage2"></div>
-            <div class="imageFullSize">
-                <img src="./images/amgGt63s.jpg" alt="">
-            </div>
         </div>
         
-            </div>
-        </div>
     </div>
 </body>
 
-</html> 
+</html>
