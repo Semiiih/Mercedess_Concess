@@ -125,10 +125,19 @@ h1 {
   position: relative;
   line-height: 30px;
   font-size: 23px;
-  margin-bottom: 200px;
+  margin-bottom: 100px;
 }
 .buttonStart:hover {
   animation: pulse 1.5s infinite;
+}
+
+.buttonStart[disabled] {
+  background-color: #0a0a0b;
+  color: #f1f2f3;
+  border: 2px solid red;
+  border-radius: 50%;
+  color: white; /* Texte en blanc */
+  cursor: not-allowed; /* Curseur non autorisé */
 }
 
 @keyframes pulse {
@@ -182,6 +191,7 @@ h1 {
   gap: 30px;
   align-items: center;
   padding-bottom: 50px;
+  padding-top: 100px;
 }
 
 .panierVide {
@@ -200,6 +210,17 @@ h1 {
   display: flex;
   align-self: center;
   margin-bottom: 20px;
+}
+.longSeparateur {
+  display: flex;
+  width: 1500px;
+  border-top: 3px solid #f1f2f3;
+  display: flex;
+  align-self: center;
+  margin-bottom: 20px;
+  margin-top: 50px;
+  margin-inline: auto;
+  box-shadow: 10px 2px 10px rgb(255, 255, 255); /* Ajoute une ombre */
 }
 
 .homeBgEclairage1 {
@@ -334,10 +355,28 @@ footer {
   padding: 10px;
   text-align: center;
 }
+.ruptureStock {
+  text-align: -webkit-center;
+}
+
+/* CSS */
+.toast {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #333;
+  color: #fff;
+  padding: 15px 20px;
+  border-radius: 5px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  display: none; /* Caché par défaut */
+  z-index: 1000;
+}
 
 .formButton {
+  display: flex;
   text-align-last: center;
-
   align-self: center;
   align-items: center;
 }
@@ -416,6 +455,98 @@ li {
   padding: 0;
 }
 
+.paypal-button-container {
+}
+
+.boxSearch {
+  display: flex;
+  justify-content: center;
+  align-self: center;
+  flex-direction: column;
+}
+.searchInput {
+  border: 1px solid #ccc;
+  max-height: 150px;
+  overflow-y: auto;
+  position: absolute;
+  background-color: black;
+  width: 200px;
+  z-index: 1000;
+  position: relative;
+}
+.buttonSearch {
+  max-height: 150px;
+  overflow-y: auto;
+  position: absolute;
+  width: 200px;
+  z-index: 1000;
+  position: relative;
+}
+.suggestions {
+}
+.suggestion-item {
+  padding: 10px;
+  cursor: pointer;
+}
+.suggestion-item:hover {
+  background-color: #3a6bc3;
+}
+
+.search-box {
+  width: fit-content;
+  height: fit-content;
+  position: relative;
+}
+.input-search {
+  height: 50px;
+  width: 50px;
+  border-style: none;
+  padding: 10px;
+  font-size: 18px;
+  letter-spacing: 2px;
+  outline: none;
+  border-radius: 25px;
+  transition: all 0.5s ease-in-out;
+  background-color: #22a6b3;
+  padding-right: 40px;
+  color: #fff;
+}
+.input-search::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 18px;
+  letter-spacing: 2px;
+  font-weight: 100;
+}
+.btn-search {
+  width: 50px;
+  height: 50px;
+  border-style: none;
+  font-size: 20px;
+  font-weight: bold;
+  outline: none;
+  cursor: pointer;
+  border-radius: 50%;
+  position: absolute;
+  right: 0px;
+  color: #ffffff;
+  background-color: transparent;
+  pointer-events: painted;
+}
+.btn-search:focus ~ .input-search {
+  width: 300px;
+  border-radius: 0px;
+  background-color: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  transition: all 500ms cubic-bezier(0, 0.11, 0.35, 2);
+}
+.input-search:focus {
+  width: 300px;
+  border-radius: 0px;
+  background-color: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  transition: all 500ms cubic-bezier(0, 0.11, 0.35, 2);
+}
+
 .carousel-container {
   display: flex;
   justify-content: center;
@@ -472,13 +603,13 @@ li {
 /* Styles pour les boutons de navigation */
 .carousel__prev,
 .carousel__next {
+  all: unset;
   cursor: pointer;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   background-color: rgba(0, 0, 0, 0.5);
   color: white;
-  border: none;
   padding: 1rem;
   font-size: 1.5rem;
   z-index: 1;

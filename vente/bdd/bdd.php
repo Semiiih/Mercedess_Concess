@@ -49,6 +49,26 @@ function addProductToBasket($id)
         where id = $id
         ) +1
     where id = $id;");
+
+
+    // $pdo = initPDO();
+
+    // $product = getProductById($id);
+
+    // if ($product['inBasket'] < $product['stock']) {
+    //     $pdo->query("
+    //         update produit 
+    //         set inBasket = (
+    //             select inBasket
+    //             from produit
+    //             where id = $id
+    //             ) +1
+    //         where id = $id;");
+
+    //     echo "Produit ajouté au panier.";
+    // } else {
+    //     echo "Impossible d'ajouter le produit au panier. Stock insuffisant.";
+    // }
 }
 
 function removeProductToBasket($id)

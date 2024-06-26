@@ -66,7 +66,7 @@ foreach ($cartProducts as $product) {
     <div class="home" id="panier">
         <header class="homeHeader">
             <div class="homeLogo">
-                <img class="homeLogoImg" src="./images/amgGt63s.jpg" alt="logo du site">
+                <img class="homeLogoImg" src="./images/logo.png" alt="logo du site">
                 <p>Mercedes Concess</p>
             </div>
 
@@ -113,16 +113,34 @@ foreach ($cartProducts as $product) {
                                     </h4>
                                     <h4><img src="<?php echo htmlspecialchars($product['image']); ?>" alt="<?php echo htmlspecialchars($product['libelle']); ?>" width="760"></h4>
                                     <div class="buttonDiv">
-                                        <!-- <form method="POST" action="panier.php">
-                                            <input type="hidden" name="remove_product_id" value="<?php echo $product['id']; ?>">
-                                            <button type="submit" class="button">Supprimer</button>
-                                        </form> -->
-                                        <form class="formButton" method="post" action="controller.php">
+                                        <form method="post" action="controller.php" >
                                             <input type="hidden" name="action" value="removeToBasket" />
                                             <input type="hidden" name="productId" value="<?php echo $product["id"]?>" />
-                                            <button class="button" type="submit">supprimer</button>
+                                            <button type="submit" class="button">Supprimer</button>
                                         </form>
-                                        <button class="button">Commander</button>
+                                        <form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+                                            <input type="hidden" name="cmd" value="_cart">
+                                            <input type="hidden" name="upload" value="1">
+                                            <input type="hidden" name="business" value="your-paypal-email@example.com">
+                                            
+                                            <?php 
+                                            $i = 1;
+                                            foreach ($cartProducts as $product): 
+                                                if ($product['inBasket'] > 0):
+                                            ?>
+                                                <input type="hidden" name="item_name_<?php echo $i; ?>" value="<?php echo htmlspecialchars($product['libelle']); ?>">
+                                                <input type="hidden" name="amount_<?php echo $i; ?>" value="<?php echo htmlspecialchars($product['prix']); ?>">
+                                                <input type="hidden" name="quantity_<?php echo $i; ?>" value="<?php echo htmlspecialchars($product['inBasket']); ?>">
+                                                <?php $i++; ?>
+                                            <?php 
+                                                endif;
+                                            endforeach; 
+                                            ?>
+                                            
+                                            <input type="hidden" name="currency_code" value="EUR">
+                                            <button  class="button">
+                                                <a href="checkout.html" class="button">Commander</a>                                        </form>
+                                            </button>
                                     </div>
                                 </div>
                             <?php endif; ?>
@@ -136,6 +154,7 @@ foreach ($cartProducts as $product) {
         </div>
         
     </div>
+    
 </body>
 
 </html>
